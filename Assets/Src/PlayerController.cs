@@ -11,13 +11,24 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
     private HealthSystem hs;
 
     [SerializeField] private Material[] playerSkins;
-   private void Awake()
+    private void Awake()
     {
         hs = new HealthSystem(100);
     }
 
     public override void OnNetworkSpawn()
     {
+        GameObject spawnPoints = GameObject.FindWithTag("SpawnPoints");
+
+        var connectedClients = NetworkManager.Singleton.ConnectedClients;
+
+        int spawnIndex = connectedClients.Count % spawnPoints.transform.childCount;
+
+        Debug.Log("wtf index: " + spawnIndex + " clients " + connectedClients.Count + " spawnpoints " + spawnPoints.transform.childCount);
+        Transform spawnPoint = spawnPoints.transform.GetChild(spawnIndex);
+
+        transform.position = spawnPoint.position;
+
         networkObject = GetComponent<NetworkObject>();
     }
 
