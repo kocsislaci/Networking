@@ -1,4 +1,6 @@
+using TMPro;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Error;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,6 +18,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button clientButton;
     [SerializeField] private Button disconnectButton;
 
+    [SerializeField] private TMP_InputField ipInput;
+
     private UIState uiState;
     internal UIState UIState
     {
@@ -29,12 +33,14 @@ public class UIManager : MonoBehaviour
                     serverButton.gameObject.SetActive(true);
                     clientButton.gameObject.SetActive(true);
                     disconnectButton.gameObject.SetActive(false);
+                    ipInput.gameObject.SetActive(true);
                     break;
                 case UIState.Connected:
                     hostButton.gameObject.SetActive(false);
                     serverButton.gameObject.SetActive(false);
                     clientButton.gameObject.SetActive(false);
                     disconnectButton.gameObject.SetActive(true);
+                    ipInput.gameObject.SetActive(false);
                     break;
                 default:
                     break;
@@ -66,6 +72,11 @@ public class UIManager : MonoBehaviour
         {
             NetworkManager.Singleton.Shutdown();
             UIState = UIState.Disconnected;
+        });
+        ipInput.onValueChanged.AddListener((value) =>
+        {
+            var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+            transport.SetConnectionData(value, 7777);
         });
     }
 }
