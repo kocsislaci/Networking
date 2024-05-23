@@ -1,15 +1,20 @@
+using CodeMonkey.HealthSystemCM;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Scripting.APIUpdating;
 
-public class PlayerController : NetworkBehaviour
+public class PlayerController : NetworkBehaviour, IGetHealthSystem
 {
     private NetworkObject networkObject;
     private MeshRenderer meshRenderer;
     [SerializeField] private GameObject bulletPrefab;
     private bool bulletShot = false;
+    private HealthSystem hs;
 
     [SerializeField] private Material[] playerSkins;
+   private void Awake()
+    {
+        hs = new HealthSystem(100);
+    }
 
     public override void OnNetworkSpawn()
     {
@@ -70,6 +75,11 @@ public class PlayerController : NetworkBehaviour
         bullet.GetComponent<NetworkObject>().Spawn(true);
 
         Destroy(bullet, 5f);
+    }
+
+    public HealthSystem GetHealthSystem()
+    {
+        return hs;
     }
 
     void SetColor(long skinId)
