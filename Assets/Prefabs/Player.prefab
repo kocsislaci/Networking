@@ -1463,7 +1463,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 744
+  m_VersionIndex: 748
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -1488,7 +1488,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: 53aab19904b2746e888a53435c22cd30, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1594,7 +1594,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 7376721307919003572, guid: 5f6e6217c1b0a4ed180ab88544352143, type: 3}
---- !u!1 &1284339572627415426
+  playerSkins:
+  - {fileID: 2100000, guid: a5d05f8313e4744888e93f9bf80f6220, type: 2}
+  - {fileID: 2100000, guid: 88d5222cdc45a4244a6d7ef0265e8dfd, type: 2}
+  - {fileID: 2100000, guid: eb682714cf6e545f6b96c94ca1d8310d, type: 2}
+  - {fileID: 2100000, guid: 98b3a79aaa8e74411baca2c2fc86dc9f, type: 2}
+  - {fileID: 2100000, guid: 2fba9f1a7b8324cb885a4b85efa09cf6, type: 2}
+  - {fileID: 2100000, guid: 7e8aa2f8fdbac467d926e29dea3f5ca8, type: 2}
+  - {fileID: 2100000, guid: 53aab19904b2746e888a53435c22cd30, type: 2}
+  - {fileID: 2100000, guid: e7f3a957d8f27402fa53aa36f0dc6345, type: 2}
+--- !u!1 &6567716603971341674
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

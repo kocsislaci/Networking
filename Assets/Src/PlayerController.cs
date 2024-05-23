@@ -5,19 +5,27 @@ using UnityEngine;
 public class PlayerController : NetworkBehaviour, IGetHealthSystem
 {
     private NetworkObject networkObject;
+    private MeshRenderer meshRenderer;
     [SerializeField] private GameObject bulletPrefab;
     private bool bulletShot = false;
     private HealthSystem hs;
 
-    private void Awake()
+    [SerializeField] private Material[] playerSkins;
+   private void Awake()
     {
         hs = new HealthSystem(100);
     }
+
     public override void OnNetworkSpawn()
     {
         networkObject = GetComponent<NetworkObject>();
     }
 
+    private void Start()
+    {
+        meshRenderer = GetComponent<MeshRenderer>();
+        SetColor((uint)OwnerClientId);
+    }
 
     private void Update()
     {
@@ -72,4 +80,11 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
     {
         return hs;
     }
+
+    void SetColor(long skinId)
+    {
+        Debug.Log($"Set Player #{OwnerClientId} color to #{skinId}");
+        meshRenderer.materials = new Material[] { playerSkins[skinId] };
+    }
+
 }
