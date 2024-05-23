@@ -1,14 +1,20 @@
+using CodeMonkey.HealthSystemCM;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Scripting.APIUpdating;
 
-public class PlayerController : NetworkBehaviour
+public class PlayerController : NetworkBehaviour, IGetHealthSystem
 {
     private NetworkObject networkObject;
     [SerializeField] private GameObject bulletPrefab;
     private bool bulletShot = false;
+    private HealthSystem hs;
 
-    public override void OnNetworkSpawn() {
+    private void Awake()
+    {
+        hs = new HealthSystem(100);
+    }
+    public override void OnNetworkSpawn()
+    {
         networkObject = GetComponent<NetworkObject>();
     }
 
@@ -18,17 +24,22 @@ public class PlayerController : NetworkBehaviour
         if (!IsOwner) return;
 
         Move();
-        if (Input.GetKey(KeyCode.Space)) {
-            if (!bulletShot) {
+        if (Input.GetKey(KeyCode.Space))
+        {
+            if (!bulletShot)
+            {
                 AttackServerRpc();
                 bulletShot = true;
             }
-        } else {
+        }
+        else
+        {
             bulletShot = false;
         }
     }
-    
-    private void Move() {
+
+    private void Move()
+    {
         float movement = 0f;
         float movementSpeed = 5f;
         float rotation = 0f;
@@ -42,16 +53,23 @@ public class PlayerController : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void MoveServerRpc(float movement, float rotation) {
+    private void MoveServerRpc(float movement, float rotation)
+    {
         transform.Translate(Vector3.forward * movement * Time.deltaTime);
         transform.RotateAround(transform.position, Vector3.up, rotation * Time.deltaTime);
     }
 
     [ServerRpc]
-    private void AttackServerRpc() {
+    private void AttackServerRpc()
+    {
         Debug.Log("Who attacks: " + OwnerClientId);
         GameObject bullet = Instantiate(bulletPrefab, transform.position + transform.forward * 1.3f + new Vector3(0, .5f, 0), transform.rotation);
         bullet.GetComponent<NetworkObject>().Spawn(true);
 
+    }
+
+    public HealthSystem GetHealthSystem()
+    {
+        return hs;
     }
 }
