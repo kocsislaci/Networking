@@ -1,3 +1,4 @@
+using System;
 using CodeMonkey.HealthSystemCM;
 using Unity.Netcode;
 using UnityEngine;
@@ -7,14 +8,41 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
     private NetworkObject networkObject;
     private MeshRenderer meshRenderer;
     [SerializeField] private GameObject bulletPrefab;
+
+    [SerializeField] private float maxHealth = 100f;
     private bool bulletShot = false;
     private HealthSystem hs;
+
+    readonly private NetworkVariable<float> health = new NetworkVariable<float>();
+
+    private int deaths = 0;
 
     [SerializeField] private Material[] playerSkins;
     private void Awake()
     {
-        hs = new HealthSystem(100);
+        hs = new HealthSystem(maxHealth);
+        hs.OnHealthChanged += OnHealthChangeServer;
+        health.OnValueChanged += OnHealthChangeClient;
     }
+
+    private void OnHealthChangeClient(float previousValue, float newValue)
+    {
+        Debug.Log("Got new value for health");
+        if (IsClient)
+        {
+            hs.SetHealth(newValue);
+        }
+    }
+
+    private void OnHealthChangeServer(object sender, EventArgs e)
+    {
+
+        if (IsServer)
+        {
+            health.Value = hs.GetHealth();
+        }
+    }
+
 
     public override void OnNetworkSpawn()
     {
@@ -86,6 +114,22 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
         bullet.GetComponent<NetworkObject>().Spawn(true);
 
         Destroy(bullet, 5f);
+    }
+
+    public void OnHitServer(float damage, ulong sourcePlayer)
+    {
+        if (IsServer)
+        {
+            Debug.Log($"Damaged.");
+
+            hs.Damage(damage);
+            if (hs.IsDead())
+            {
+                Debug.Log($"Thats it, Im dead :( killed by #{sourcePlayer}. I have died #{deaths} times.");
+                deaths++;
+                hs.SetHealth(maxHealth);
+            }
+        }
     }
 
     public HealthSystem GetHealthSystem()
