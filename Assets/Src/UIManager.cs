@@ -76,7 +76,9 @@ public class UIManager : MonoBehaviour
         ipInput.onValueChanged.AddListener((value) =>
         {
             var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-            transport.SetConnectionData(value, 7777);
+            if (transport) {
+                transport.SetConnectionData(value, 7777);
+             }
         });
     }
 }
