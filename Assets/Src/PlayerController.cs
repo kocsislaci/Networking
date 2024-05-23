@@ -69,6 +69,7 @@ public class PlayerController : NetworkBehaviour
         GameObject bullet = Instantiate(bulletPrefab, transform.position + transform.forward * 1.3f + new Vector3(0, .5f, 0), transform.rotation);
         bullet.GetComponent<NetworkObject>().Spawn(true);
 
+        Destroy(bullet, 5f);
     }
 
     void SetColor(long skinId)
