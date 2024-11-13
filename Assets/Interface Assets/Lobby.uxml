@@ -1,0 +1,19 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement style="flex-grow: 1; flex-direction: row; padding: 16px; align-items: stretch;">
+        <ui:VisualElement style="flex-grow: 3; flex-align: center;">
+            <ui:Label text="Lobby ID" display-tooltip-when-elided="true" style="align-self: center;" />
+            <ui:Label text="Player List" display-tooltip-when-elided="true" />
+            <ui:ScrollView style="padding-left: 8px;">
+                <ui:VisualElement style="flex-direction: row;">
+                    <ui:Label text="Player Id" display-tooltip-when-elided="true" />
+                    <ui:Label text="- Color" display-tooltip-when-elided="true" />
+                </ui:VisualElement>
+            </ui:ScrollView>
+            <ui:DropdownField label="Colorpicker" index="-1" choices="System.Collections.Generic.List`1[System.String]" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; align-items: center; align-content: space-around;">
+            <ui:Button text="Start" display-tooltip-when-elided="true" name="start" />
+            <ui:Button text="Leave" display-tooltip-when-elided="true" name="leave" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
