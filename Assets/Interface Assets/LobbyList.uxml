@@ -1,19 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements"
-        xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements"
-        noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:VisualElement style="flex-grow: 1; flex-direction: row; padding: 16px; align-items: stretch">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="lobby-list-view" style="flex-grow: 1; flex-direction: row; padding: 16px; align-items: stretch;">
         <ui:VisualElement style="flex-grow: 3; flex-align: center;">
-            <ui:Label text="Player ID" display-tooltip-when-elided="true" style="align-self: center;"/>
-            <ui:Label text="Lobby List" display-tooltip-when-elided="true"/>
-            <ui:TextField picking-mode="Ignore" label="Pick Lobby:" text="Lobby ID" name="lobby-id" />
+            <ui:Label text="Player ID" display-tooltip-when-elided="true" style="align-self: center;" />
+            <ui:Label text="&#10;" display-tooltip-when-elided="true" name="player-id" style="align-self: center;" />
+            <ui:TextField picking-mode="Ignore" label="Lobbies:" name="lobby-list" readonly="true" multiline="true" focusable="false" style="flex-grow: 1;" />
+            <ui:TextField picking-mode="Ignore" label="Pick Lobby:" text="Lobby ID" name="lobby-id-text-field" />
         </ui:VisualElement>
-        <ui:VisualElement style="flex-grow: 1; align-items: center; align-content: space-around;">
-            <ui:Button text="Sign In" display-tooltip-when-elided="true" name="sign-in"/>
-            <ui:Button text="Refresh" display-tooltip-when-elided="true" name="refresh"/>
-            <ui:Button text="Create Lobby" display-tooltip-when-elided="true" name="create"/>
-            <ui:Button text="Join" display-tooltip-when-elided="true" name="join"/>
-            <ui:Button text="Leaderboard" display-tooltip-when-elided="true" name="learderboard"/>
+        <ui:VisualElement style="flex-grow: 1; align-items: stretch; align-content: space-around; justify-content: space-around; max-height: none; margin-bottom: 0;">
+            <ui:Button text="Sign In" display-tooltip-when-elided="true" name="sign-in" style="flex-grow: 1;" />
+            <ui:Button text="Sign Out" display-tooltip-when-elided="true" name="sign-out" style="display: flex; justify-content: flex-start; flex-grow: 1;" />
+            <ui:Button text="Refresh" display-tooltip-when-elided="true" name="refresh" style="flex-grow: 1; display: flex;" />
+            <ui:Button text="Create Lobby" display-tooltip-when-elided="true" name="create-lobby" style="flex-grow: 1; display: flex;" />
+            <ui:Button text="Join Lobby" display-tooltip-when-elided="true" name="join-lobby" style="height: 19px; flex-grow: 1; display: flex;" />
+            <ui:Button text="Leaderboard" display-tooltip-when-elided="true" name="learderboard" style="flex-grow: 1; display: none;" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
