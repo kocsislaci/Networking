@@ -9,9 +9,12 @@ public class CameraController : MonoBehaviour
     {
         if (!player)
         {
-            player = NetworkManager.Singleton.LocalClient.PlayerObject;
-            transform.parent = player.transform;
-            transform.localPosition = new Vector3(0, 3.0f, -7.0f);
+            player = NetworkManager.Singleton.LocalClient?.PlayerObject ?? null;
+        }
+        if (player)
+        {
+            transform.position = player.transform.position;
+            transform.rotation = player.transform.rotation;
         }
     }
 }
