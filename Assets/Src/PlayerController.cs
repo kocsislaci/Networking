@@ -63,7 +63,6 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
     private void Start()
     {
         meshRenderer = GetComponent<MeshRenderer>();
-        SetColor((uint)OwnerClientId);
     }
 
     private void Update()
@@ -71,7 +70,7 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
         if (!IsOwner) return;
 
         Move();
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.Mouse0))
         {
             if (!bulletShot)
             {

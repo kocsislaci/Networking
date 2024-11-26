@@ -2,6 +2,8 @@ public enum LobbyState
 {
     SignedOut,
     SignedIn,
-    Host,
-    Client,
+    HostInLobby,
+    ClientInLobby,
+    HostInGame,
+    ClientInGame,
 }

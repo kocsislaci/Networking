@@ -11,10 +11,12 @@ public class LobbyUIController : MonoBehaviour
     [SerializeField] private LobbyManager lobbyManager;
     [SerializeField] private UIDocument lobbyListDocument;
     [SerializeField] private UIDocument lobbyDocument;
+    [SerializeField] private UIDocument inGameDocument;
     [SerializeField] private VisualTreeAsset playerListElementTemplate;
 
     private bool lobbyListViewListenersSet = false;
     private bool lobbyViewListenersSet = false;
+    private bool inGameViewListenersSet = false;
 
     // lobby list buttons
     private Button signInButton;
@@ -40,11 +42,16 @@ public class LobbyUIController : MonoBehaviour
     private VisualElement playerList;
     private DropdownField colorPickerDropdown;
 
+    // in game view buttons
+    private Button closeGameButton;
+    private Button leaveGameButton;
+
     // unity events
     private void Awake()
     {
         SetUpLobbyListViewReferences();
         SetupLobbyViewReferences();
+        SetupInGameViewReferences();
         SetupDropdown();
 
         // listening to lobby manager events
@@ -93,6 +100,12 @@ public class LobbyUIController : MonoBehaviour
         playerList = lobbyDocument.rootVisualElement.Q("player-list");
         colorPickerDropdown = lobbyDocument.rootVisualElement.Q("color-picker") as DropdownField;
     }
+    private void SetupInGameViewReferences()
+    {
+        // in game view buttons
+        closeGameButton = inGameDocument.rootVisualElement.Q("close-game") as Button;
+        leaveGameButton = inGameDocument.rootVisualElement.Q("leave-game") as Button;
+    }
 
     // subscribe and unsubscribe listeners
     public void SubscribeLobbyListViewElements()
@@ -133,6 +146,18 @@ public class LobbyUIController : MonoBehaviour
         closeButton.clicked -= Close;
         leaveButton.clicked -= Leave;
     }
+    public void SubscribeInGameViewElements()
+    {
+        // in game view buttons
+        closeGameButton.clicked += CloseGame;
+        leaveGameButton.clicked += LeaveGame;
+    }
+    public void UnsubscribeInGameViewElements()
+    {
+        // in game view buttons
+        closeGameButton.clicked -= CloseGame;
+        leaveGameButton.clicked -= LeaveGame;
+    }
 
     private void SetupDropdown()
     {
@@ -154,13 +179,19 @@ public class LobbyUIController : MonoBehaviour
             case LobbyState.SignedIn:
                 lobbyListDocument.rootVisualElement.visible = true;
                 lobbyDocument.rootVisualElement.visible = false;
-
+                inGameDocument.rootVisualElement.visible = false;
                 break;
-            case LobbyState.Host:
-            case LobbyState.Client:
+            case LobbyState.HostInLobby:
+            case LobbyState.ClientInLobby:
                 lobbyListDocument.rootVisualElement.visible = false;
                 lobbyDocument.rootVisualElement.visible = true;
-
+                inGameDocument.rootVisualElement.visible = false;
+                break;
+            case LobbyState.HostInGame:
+            case LobbyState.ClientInGame:
+                lobbyListDocument.rootVisualElement.visible = false;
+                lobbyDocument.rootVisualElement.visible = false;
+                inGameDocument.rootVisualElement.visible = true;
                 break;
         }
         // set listeners for lobby list and lobby view
@@ -169,12 +200,21 @@ public class LobbyUIController : MonoBehaviour
             SubscribeLobbyListViewElements();
             lobbyListViewListenersSet = true;
             lobbyViewListenersSet = false;
+            inGameViewListenersSet = false;
         }
-        if ((state == LobbyState.Host || state == LobbyState.Client) && !lobbyViewListenersSet)
+        if ((state == LobbyState.HostInLobby || state == LobbyState.ClientInLobby) && !lobbyViewListenersSet)
         {
             SubscribeLobbyViewElements();
             lobbyViewListenersSet = true;
             lobbyListViewListenersSet = false;
+            inGameViewListenersSet = false;
+        }
+        if ((state == LobbyState.HostInGame || state == LobbyState.ClientInGame) && !inGameViewListenersSet)
+        {
+            SubscribeInGameViewElements();
+            lobbyViewListenersSet = false;
+            lobbyListViewListenersSet = false;
+            inGameViewListenersSet = true;
         }
         // set button states
         switch (state)
@@ -193,17 +233,25 @@ public class LobbyUIController : MonoBehaviour
                 createLobbyButton.SetEnabled(true);
                 joinLobbyButton.SetEnabled(true);
                 break;
-            case LobbyState.Host:
+            case LobbyState.HostInLobby:
                 startButton.SetEnabled(true);
                 readyButton.SetEnabled(false);
                 closeButton.SetEnabled(true);
                 leaveButton.SetEnabled(false);
                 break;
-            case LobbyState.Client:
+            case LobbyState.ClientInLobby:
                 startButton.SetEnabled(false);
                 readyButton.SetEnabled(true);
                 closeButton.SetEnabled(false);
                 leaveButton.SetEnabled(true);
+                break;
+            case LobbyState.HostInGame:
+                closeGameButton.SetEnabled(true);
+                leaveGameButton.SetEnabled(false);
+                break;
+            case LobbyState.ClientInGame:
+                closeGameButton.SetEnabled(false);
+                leaveGameButton.SetEnabled(true);
                 break;
         }
     }
@@ -274,6 +322,7 @@ public class LobbyUIController : MonoBehaviour
 
     private void StartGame()
     {
+        lobbyManager.StartGame();
     }
     private void Ready()
     {
@@ -285,5 +334,16 @@ public class LobbyUIController : MonoBehaviour
     private void Leave()
     {
         lobbyManager.LeaveLobby();
+    }
+
+    // In game view functions
+
+    private void LeaveGame()
+    {
+        lobbyManager.LeaveGame();
+    }
+    private void CloseGame()
+    {
+        lobbyManager.CloseGame();
     }
 }
