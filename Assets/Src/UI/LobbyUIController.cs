@@ -305,13 +305,13 @@ public class LobbyUIController : MonoBehaviour
     }
     private void CreateLobby()
     {
-        lobbyManager.HostLobby();
+        lobbyManager.HostLobby(playerName.text);
     }
     private void JoinLobby()
     {
         if (typedInLobbyCode != "")
         {
-            lobbyManager.JoinLobby(typedInLobbyCode);
+            lobbyManager.JoinLobby(typedInLobbyCode, playerName.text);
         }
         else
         {

@@ -224,7 +224,7 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    public async void HostLobby()
+    public async void HostLobby(string name)
     {
         try
         {
@@ -235,7 +235,7 @@ public class LobbyManager : MonoBehaviour
                 Data = new Dictionary<string, DataObject> { { "JOIN_CODE", new DataObject(DataObject.VisibilityOptions.Member, "") } }
             });
             StartCoroutine(HeartbeatLobbyCoroutine(15));
-            UpdatePlayerColor("");
+            UpdatePlayerInitially(name);
             State = LobbyState.HostInLobby;
             ConnectedLobbyChanged.Invoke(ConnectedLobby.Name);
         }
@@ -245,13 +245,13 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    public async void JoinLobby(string lobbyCode)
+    public async void JoinLobby(string lobbyCode, string name)
     {
         try
         {
             ConnectedLobby = await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode);
             State = LobbyState.ClientInLobby;
-            UpdatePlayerColor("");
+            UpdatePlayerInitially(name);
             ConnectedLobbyChanged.Invoke(ConnectedLobby.Name);
         }
         catch (LobbyServiceException e)
@@ -348,7 +348,7 @@ public class LobbyManager : MonoBehaviour
     }
 
     // Update API methods
-    public async void UpdatePlayerName(string name)
+    public async void UpdatePlayerInitially(string name)
     {
         try {
             UpdatePlayerOptions options = new UpdatePlayerOptions();
@@ -360,13 +360,15 @@ public class LobbyManager : MonoBehaviour
                         visibility: PlayerDataObject.VisibilityOptions.Member,
                         value: name)
                 },
+                {
+                    "color", new PlayerDataObject(visibility: PlayerDataObject.VisibilityOptions.Member, value: "")
+                }
             };
             await LobbyService.Instance.UpdatePlayerAsync(connectedLobby.Id, AuthenticationService.Instance.PlayerId, options);
         } catch (LobbyServiceException e) {
             Debug.LogError(e);
         }
     }
-
     public async void UpdatePlayerColor(string color)
     {
         try
