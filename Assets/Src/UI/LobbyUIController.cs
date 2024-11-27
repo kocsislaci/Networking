@@ -279,7 +279,6 @@ public class LobbyUIController : MonoBehaviour
         foreach (var player in players)
         {
             var playerElement = playerListElementTemplate.CloneTree();
-            playerElement.Q<Label>("id").text = player.Id;
             playerElement.Q<Label>("color").text = player.Data.ContainsKey("color") ? player.Data["color"].Value : "Not set";
             playerElement.Q<Label>("name").text = player.Data.ContainsKey("name") ? player.Data["name"].Value : "Unknown";
             playerList.Add(playerElement);
