@@ -1466,6 +1466,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88fc78eb17fd941018620e05787b6d11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultColors:
+  - label: Red
+    material: {fileID: 2100000, guid: a5d05f8313e4744888e93f9bf80f6220, type: 2}
+  - label: Blue
+    material: {fileID: 2100000, guid: eb682714cf6e545f6b96c94ca1d8310d, type: 2}
+  - label: Brick Wall
+    material: {fileID: 2100000, guid: ca1c24e855e1ac1448543b30aa152d61, type: 2}
+  - label: "Meglepet\xE9s"
+    material: {fileID: 2100000, guid: 5ca83670ed144854590a04dcb646e851, type: 2}
   LobbyStateChanged:
     m_PersistentCalls:
       m_Calls: []

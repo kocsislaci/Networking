@@ -186,7 +186,7 @@ public class LobbyUIController : MonoBehaviour
 
     private void SetupDropdown()
     {
-        colorPickerDropdown.choices = new List<string> { "Red", "Green", "Blue", "Yellow" };
+        colorPickerDropdown.choices = PlayerColor.GetLabels(lobbyManager.defaultColors);
         colorPickerDropdown.RegisterValueChangedCallback(evt =>
         {
             lobbyManager.UpdatePlayerColor(evt.newValue);
