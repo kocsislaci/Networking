@@ -1,8 +1,11 @@
 using System.Collections.Generic;
 using Unity.Services.Lobbies.Models;
+using Unity.Services.Core;
 using UnityEngine;
 using UnityEngine.UIElements;
-using System.Linq;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 
 public class LobbyUIController : MonoBehaviour
@@ -24,13 +27,15 @@ public class LobbyUIController : MonoBehaviour
     private Button refreshButton;
     private Button createLobbyButton;
     private Button joinLobbyButton;
+    private Button generateNameButton;
 
     // lobby list fields
     private Label playerIdLabel;
     private TextField joinLobbyTextField;
     private string typedInLobbyCode = "";
-    private TextField lobbyListTextField;
 
+    private TextField lobbyListTextField;
+    private TextField playerName;
     // lobby view buttons
     private Button startButton;
     private Button readyButton;
@@ -47,8 +52,18 @@ public class LobbyUIController : MonoBehaviour
     private Button leaveGameButton;
 
     // unity events
-    private void Awake()
+    private async void Awake()
     {
+        try
+        {
+            await UnityServices.InitializeAsync();
+            Debug.Log("Unity Services initialized successfully.");
+
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Failed to initialize Unity Services: {e.Message}");
+        }
         SetUpLobbyListViewReferences();
         SetupLobbyViewReferences();
         SetupInGameViewReferences();
@@ -81,11 +96,13 @@ public class LobbyUIController : MonoBehaviour
         refreshButton = lobbyListDocument.rootVisualElement.Q("refresh") as Button;
         createLobbyButton = lobbyListDocument.rootVisualElement.Q("create-lobby") as Button;
         joinLobbyButton = lobbyListDocument.rootVisualElement.Q("join-lobby") as Button;
+        generateNameButton = lobbyListDocument.rootVisualElement.Q("random-name") as Button;
 
         // list view fields
         playerIdLabel = lobbyListDocument.rootVisualElement.Q("player-id") as Label;
         joinLobbyTextField = lobbyListDocument.rootVisualElement.Q("lobby-id-text-field") as TextField;
         lobbyListTextField = lobbyListDocument.rootVisualElement.Q("lobby-list") as TextField;
+        playerName = lobbyListDocument.rootVisualElement.Q("player-name") as TextField;
     }
     private void SetupLobbyViewReferences()
     {
@@ -107,6 +124,11 @@ public class LobbyUIController : MonoBehaviour
         leaveGameButton = inGameDocument.rootVisualElement.Q("leave-game") as Button;
     }
 
+    public string GetPlayerName()
+    {
+        return playerName.text;
+    }
+
     // subscribe and unsubscribe listeners
     public void SubscribeLobbyListViewElements()
     {
@@ -116,6 +138,7 @@ public class LobbyUIController : MonoBehaviour
         refreshButton.clicked += Refresh;
         createLobbyButton.clicked += CreateLobby;
         joinLobbyButton.clicked += JoinLobby;
+        generateNameButton.clicked += SetRandomName;
         // list view fields
         joinLobbyTextField.RegisterCallback<ChangeEvent<string>>(UpdateTypedInLobbyId);
     }
@@ -127,6 +150,7 @@ public class LobbyUIController : MonoBehaviour
         refreshButton.clicked -= Refresh;
         createLobbyButton.clicked -= CreateLobby;
         joinLobbyButton.clicked -= JoinLobby;
+        generateNameButton.clicked -= SetRandomName;
         // list view fields
         joinLobbyTextField.UnregisterCallback<ChangeEvent<string>>(UpdateTypedInLobbyId);
     }
@@ -279,8 +303,8 @@ public class LobbyUIController : MonoBehaviour
         foreach (var player in players)
         {
             var playerElement = playerListElementTemplate.CloneTree();
-            playerElement.Q<Label>("id").text = player.Id;
             playerElement.Q<Label>("color").text = player.Data.ContainsKey("color") ? player.Data["color"].Value : "Not set";
+            playerElement.Q<Label>("name").text = player.Data.ContainsKey("name") ? player.Data["name"].Value : "Unknown";
             playerList.Add(playerElement);
         }
     }
@@ -303,15 +327,88 @@ public class LobbyUIController : MonoBehaviour
     {
         lobbyManager.RefreshLobbies();
     }
+
+    private string ParseJsonArray(string jsonArray)
+    {
+        // Check if the string starts and ends with square brackets and is not empty
+        if (jsonArray.StartsWith("[") && jsonArray.EndsWith("]"))
+        {
+            // Remove the brackets and trim spaces
+            jsonArray = jsonArray.Substring(1, jsonArray.Length - 2).Trim();
+
+            // Remove the quotes around the string (if present)
+            if (jsonArray.StartsWith("\"") && jsonArray.EndsWith("\""))
+            {
+                jsonArray = jsonArray.Substring(1, jsonArray.Length - 2);
+            }
+
+            return jsonArray; // Return the name
+        }
+
+        return null; // Return null if parsing failed
+    }
+
+    private async Task<string> GetRandomName()
+    {
+        const string apiCall = "https://randommer.io/api/Name?nameType=firstname&quantity=1";
+        const string apiKey = "46800eece20949299f5c4fd9fab17804";
+
+        try
+        {
+            Debug.Log("Making API call to get a random name...");
+
+            using (HttpClient client = new HttpClient())
+            {
+                // Add the API key header
+                client.DefaultRequestHeaders.Add("X-API-KEY", apiKey);
+
+                HttpResponseMessage response = await client.GetAsync(apiCall);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    string randomName = ParseJsonArray(responseBody);
+
+                    if (!string.IsNullOrEmpty(randomName))
+                    {
+                        return randomName.Trim();
+                    }
+                    else
+                    {
+                        Debug.LogError("Name extraction failed from the API response.");
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"API call failed with status code: {response.StatusCode}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error while fetching random name: {ex.Message}");
+        }
+
+        Debug.LogWarning("Returning fallback name: Player");
+        return "Player";
+    }
+
+
     private void CreateLobby()
     {
-        lobbyManager.HostLobby();
+        lobbyManager.HostLobby(playerName.text);
     }
+
+    private async void SetRandomName()
+    {
+        playerName.value = await GetRandomName();
+    }
+
     private void JoinLobby()
     {
         if (typedInLobbyCode != "")
         {
-            lobbyManager.JoinLobby(typedInLobbyCode);
+            lobbyManager.JoinLobby(typedInLobbyCode, playerName.text);
         }
         else
         {
