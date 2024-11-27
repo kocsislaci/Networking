@@ -1,12 +1,15 @@
 using System;
 using CodeMonkey.HealthSystemCM;
+using TMPro;
 using Unity.Netcode;
+using Unity.Services.Authentication;
+using Unity.Services.Lobbies;
 using UnityEngine;
 
 public class PlayerController : NetworkBehaviour, IGetHealthSystem
 {
     private NetworkObject networkObject;
-    private MeshRenderer meshRenderer;
+    private MeshRenderer[] meshRenderers;
     [SerializeField] private GameObject bulletPrefab;
 
     [SerializeField] private float maxHealth = 100f;
@@ -15,7 +18,8 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
 
     readonly private NetworkVariable<float> health = new NetworkVariable<float>();
 
-    [SerializeField] private Material[] playerSkins;
+    private int deaths = 0;
+
     private void Awake()
     {
         hs = new HealthSystem(maxHealth);
@@ -40,7 +44,6 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
         }
     }
 
-
     public override void OnNetworkSpawn()
     {
         GameObject spawnPoints = GameObject.FindWithTag("SpawnPoints");
@@ -59,7 +62,24 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
 
     private void Start()
     {
-        meshRenderer = GetComponent<MeshRenderer>();
+        meshRenderers = GetComponentsInChildren<MeshRenderer>();
+        Array.Resize(ref meshRenderers, meshRenderers.Length + 1);
+        meshRenderers[meshRenderers.GetUpperBound(0)] = GetComponent<MeshRenderer>();
+
+        FetchAndSetColor();
+    }
+
+    private void FetchAndSetColor()
+    {
+        var lobbyManager = FindAnyObjectByType<LobbyManager>();
+        var playerId = AuthenticationService.Instance.PlayerId;
+
+        var data = lobbyManager.GetPlayerData(playerId);
+
+        var colorData = data["color"];
+
+        var m = PlayerColor.FindColor(lobbyManager.defaultColors, colorData.Value);
+        SetColor(m.material);
     }
 
     private void Update()
@@ -132,10 +152,13 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
         return hs;
     }
 
-    void SetColor(long skinId)
+    void SetColor(Material m)
     {
-        Debug.Log($"Set Player #{OwnerClientId} color to #{skinId}");
-        meshRenderer.materials = new Material[] { playerSkins[skinId] };
+        Debug.Log($"Set Player #{OwnerClientId} color to #{m.name}");
+        foreach (var renderer in meshRenderers)
+        {
+            renderer.materials = new Material[] { m };
+        }
     }
 
 }

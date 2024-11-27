@@ -1,6 +1,10 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <ui:VisualElement name="lobby-list-view" style="flex-grow: 1; flex-direction: row; padding: 16px; align-items: stretch;">
         <ui:VisualElement style="flex-grow: 3; flex-align: center;">
+            <ui:VisualElement style="flex-direction: row;">
+                <ui:TextField picking-mode="Ignore" label="Pick name:" text="Name" name="player-name" readonly="false" style="flex-basis: auto; flex-grow: 1;" />
+                <ui:Button text="Generate" display-tooltip-when-elided="true" name="random-name" style="white-space: normal; -unity-text-align: middle-center;" />
+            </ui:VisualElement>
             <ui:Label text="Player ID" display-tooltip-when-elided="true" style="align-self: center;" />
             <ui:Label text="&#10;" display-tooltip-when-elided="true" name="player-id" style="align-self: center;" />
             <ui:TextField picking-mode="Ignore" label="Lobbies:" name="lobby-list" readonly="true" multiline="true" focusable="false" style="flex-grow: 1;" />
