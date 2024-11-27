@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerController : NetworkBehaviour, IGetHealthSystem
 {
     private NetworkObject networkObject;
-    private MeshRenderer meshRenderer;
+    private MeshRenderer[] meshRenderers;
     [SerializeField] private GameObject bulletPrefab;
 
     [SerializeField] private float maxHealth = 100f;
@@ -17,7 +17,7 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
 
     private int deaths = 0;
 
-    [SerializeField] private Material[] playerSkins;
+    [SerializeField] private Material skin;
     private void Awake()
     {
         hs = new HealthSystem(maxHealth);
@@ -62,7 +62,10 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
 
     private void Start()
     {
-        meshRenderer = GetComponent<MeshRenderer>();
+        meshRenderers = GetComponentsInChildren<MeshRenderer>();
+        Array.Resize(ref meshRenderers, meshRenderers.Length + 1);
+        meshRenderers[meshRenderers.GetUpperBound(0)] = GetComponent<MeshRenderer>();
+        SetColor(skin);
     }
 
     private void Update()
@@ -136,10 +139,13 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
         return hs;
     }
 
-    void SetColor(long skinId)
+    void SetColor(Material m)
     {
-        Debug.Log($"Set Player #{OwnerClientId} color to #{skinId}");
-        meshRenderer.materials = new Material[] { playerSkins[skinId] };
+        Debug.Log($"Set Player #{OwnerClientId} color to #{m.name}");
+        foreach (var renderer in meshRenderers)
+        {
+            renderer.materials = new Material[] { m };
+        }
     }
 
 }
