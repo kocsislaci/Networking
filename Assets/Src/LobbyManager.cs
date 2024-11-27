@@ -176,12 +176,6 @@ public class LobbyManager : MonoBehaviour
 
     // API methods
 
-    public string GetPlayerName(string playerId)
-    {
-        players.ForEach(p => Debug.Log(p.Id));
-        return "Unknown";
-    }
-
     public async void SignIn()
     {
         try
