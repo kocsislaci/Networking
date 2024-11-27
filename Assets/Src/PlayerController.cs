@@ -1,6 +1,9 @@
 using System;
 using CodeMonkey.HealthSystemCM;
+using TMPro;
 using Unity.Netcode;
+using Unity.Services.Lobbies;
+using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
 public class PlayerController : NetworkBehaviour, IGetHealthSystem
@@ -10,6 +13,7 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
     [SerializeField] private GameObject bulletPrefab;
 
     [SerializeField] private float maxHealth = 100f;
+    [SerializeField] private string name = "Unknown";
     private bool bulletShot = false;
     private HealthSystem hs;
 
@@ -43,6 +47,11 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
         }
     }
 
+    public void SetName(string name)
+    {
+        this.name = name;
+    }
+
 
     public override void OnNetworkSpawn()
     {
@@ -58,6 +67,11 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
         transform.position = spawnPoint.position;
 
         networkObject = GetComponent<NetworkObject>();
+
+        var component = transform.GetComponentInChildren<TextMeshPro>();
+        var ctrl = FindAnyObjectByType<LobbyUIController>();
+        name = ctrl.GetPlayerName();
+        component.text = name;
     }
 
     private void Start()

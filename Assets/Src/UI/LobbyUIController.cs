@@ -108,6 +108,11 @@ public class LobbyUIController : MonoBehaviour
         leaveGameButton = inGameDocument.rootVisualElement.Q("leave-game") as Button;
     }
 
+    public string GetPlayerName()
+    {
+        return playerName.text;
+    }
+
     // subscribe and unsubscribe listeners
     public void SubscribeLobbyListViewElements()
     {
