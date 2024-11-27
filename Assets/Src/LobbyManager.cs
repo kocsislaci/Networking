@@ -43,7 +43,6 @@ public class LobbyManager : MonoBehaviour
         }
     }
     private List<Player> players;
-
     [SerializeField] public List<PlayerColor> defaultColors;
 
     private List<Player> Players

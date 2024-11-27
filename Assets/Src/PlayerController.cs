@@ -157,9 +157,25 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
     void SetColor(Material m)
     {
         Debug.Log($"Set Player #{OwnerClientId} color to #{m.name}");
+        var mat = new Material[] { m };
         foreach (var renderer in meshRenderers)
         {
-            renderer.materials = new Material[] { m };
+            renderer.materials = mat;
+        }
+
+        // Ensure we have a material to assign
+        if (m.name == null)
+        {
+            Debug.LogWarning("No material assigned!");
+            return;
+        }
+
+        // Iterate through all child objects
+        MeshRenderer[] childRenderers = GetComponentsInChildren<MeshRenderer>();
+
+        foreach (MeshRenderer renderer in childRenderers)
+        {
+            renderer.materials = mat; // Assign the material
         }
     }
 

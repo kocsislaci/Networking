@@ -8,6 +8,12 @@ public class PlayerColor
     [SerializeField] public string label;
     [SerializeField] public Material material;
 
+    public PlayerColor(Material m)
+    {
+        label = m.name;
+        material = m;
+    }
+
     public static List<string> GetLabels(List<PlayerColor> colors)
     {
         var labels = new List<string>();
