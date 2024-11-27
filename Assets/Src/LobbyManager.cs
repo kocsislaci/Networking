@@ -44,7 +44,7 @@ public class LobbyManager : MonoBehaviour
     }
     private List<Player> players;
 
-    public List<string> defaultColors = new() { "Red", "Green", "Blue", "Yellow", "Black", "Pink", "Orange", "White", "Cyan", "Gray" };
+    [SerializeField] public List<PlayerColor> defaultColors;
 
     private List<Player> Players
     {
@@ -401,5 +401,11 @@ public class LobbyManager : MonoBehaviour
         {
             Debug.Log("Player session could not be refreshed and expired.");
         };
+    }
+
+    public Dictionary<string, PlayerDataObject> GetPlayerData(string playerId)
+    {
+        var p = players.Find(x => x.Id == playerId);
+        return p.Data;
     }
 }

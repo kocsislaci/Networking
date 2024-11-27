@@ -1,6 +1,8 @@
 using System;
 using CodeMonkey.HealthSystemCM;
 using Unity.Netcode;
+using Unity.Services.Authentication;
+using Unity.Services.Lobbies;
 using UnityEngine;
 
 public class PlayerController : NetworkBehaviour, IGetHealthSystem
@@ -17,7 +19,6 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
 
     private int deaths = 0;
 
-    [SerializeField] private Material skin;
     private void Awake()
     {
         hs = new HealthSystem(maxHealth);
@@ -65,7 +66,21 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
         meshRenderers = GetComponentsInChildren<MeshRenderer>();
         Array.Resize(ref meshRenderers, meshRenderers.Length + 1);
         meshRenderers[meshRenderers.GetUpperBound(0)] = GetComponent<MeshRenderer>();
-        SetColor(skin);
+
+        FetchAndSetColor();
+    }
+
+    private void FetchAndSetColor()
+    {
+        var lobbyManager = FindAnyObjectByType<LobbyManager>();
+        var playerId = AuthenticationService.Instance.PlayerId;
+
+        var data = lobbyManager.GetPlayerData(playerId);
+
+        var colorData = data["color"];
+
+        var m = PlayerColor.FindColor(lobbyManager.defaultColors, colorData.Value);
+        SetColor(m.material);
     }
 
     private void Update()
