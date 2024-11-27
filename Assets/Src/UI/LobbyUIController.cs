@@ -350,7 +350,7 @@ public class LobbyUIController : MonoBehaviour
 
     private async Task<string> GetRandomName()
     {
-        const string apiCall = "https://randommer.io/api/Name?nameType=fullname&quantity=1";
+        const string apiCall = "https://randommer.io/api/Name?nameType=firstname&quantity=1";
         const string apiKey = "46800eece20949299f5c4fd9fab17804";
 
         try
@@ -362,26 +362,16 @@ public class LobbyUIController : MonoBehaviour
                 // Add the API key header
                 client.DefaultRequestHeaders.Add("X-API-KEY", apiKey);
 
-                Debug.Log("Added API key to request headers.");
-
                 HttpResponseMessage response = await client.GetAsync(apiCall);
-                Debug.Log($"Received response with status code: {response.StatusCode}");
 
                 if (response.IsSuccessStatusCode)
                 {
                     string responseBody = await response.Content.ReadAsStringAsync();
-                    Debug.Log("Successfully received the response body.");
-
-                    // Log the raw response body (the JSON string)
-                    Debug.Log($"Raw response body: {responseBody}");
-
-                    // Manually parse the response (which is a JSON array)
                     string randomName = ParseJsonArray(responseBody);
 
                     if (!string.IsNullOrEmpty(randomName))
                     {
-                        Debug.Log($"Extracted name: {randomName}");
-                        return randomName.Trim(); // Ensure no extra spaces
+                        return randomName.Trim();
                     }
                     else
                     {
@@ -399,7 +389,6 @@ public class LobbyUIController : MonoBehaviour
             Debug.LogError($"Error while fetching random name: {ex.Message}");
         }
 
-        // Fallback if the API call fails or name extraction fails
         Debug.LogWarning("Returning fallback name: Player");
         return "Player";
     }
@@ -412,8 +401,6 @@ public class LobbyUIController : MonoBehaviour
 
     private async void SetRandomName()
     {
-        Debug.Log("Hellooooooooo");
-
         playerName.value = await GetRandomName();
     }
 
