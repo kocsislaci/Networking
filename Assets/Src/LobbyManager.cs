@@ -43,6 +43,7 @@ public class LobbyManager : MonoBehaviour
         }
     }
     private List<Player> players;
+
     private List<Player> Players
     {
         set
@@ -152,6 +153,24 @@ public class LobbyManager : MonoBehaviour
         if (State == LobbyState.HostInLobby || State == LobbyState.ClientInLobby || State == LobbyState.ClientInGame)
         {
             RefreshLobbyData();
+        }
+
+        if (State == LobbyState.ClientInGame) {
+            // Load all players and figure our how many of them are alive
+            var players = gameObject.GetComponents<PlayerController>();
+            var aliveCount = 0;
+            foreach (var player in players)
+            {
+                if (!player.GetHealthSystem().IsDead()) {
+                    aliveCount++;
+                }
+            }
+
+            if (aliveCount <= 1) {
+                // Game over
+                Debug.Log("Game over");
+                CloseGame();
+            }
         }
     }
 
