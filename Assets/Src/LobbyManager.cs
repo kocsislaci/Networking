@@ -44,7 +44,7 @@ public class LobbyManager : MonoBehaviour
     }
     private List<Player> players;
 
-    public List<string> defaultColors = new() { "Red", "Green", "Blue", "Yellow", "Black", "Pink", "Orange", "White", "Cyan", "Gray" };
+    public List<string> defaultColors;
 
     private List<Player> Players
     {

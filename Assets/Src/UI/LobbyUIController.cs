@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UIElements;
+using System.Linq;
 
 
 public class LobbyUIController : MonoBehaviour
@@ -161,6 +161,7 @@ public class LobbyUIController : MonoBehaviour
 
     private void SetupDropdown()
     {
+        lobbyManager.defaultColors = ListMaterialsInFolder.ListMaterials().ToList();
         colorPickerDropdown.choices = lobbyManager.defaultColors;
         colorPickerDropdown.RegisterValueChangedCallback(evt =>
         {
