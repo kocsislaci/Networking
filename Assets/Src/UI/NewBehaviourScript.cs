@@ -1,17 +1,19 @@
-using UnityEditor;
 using UnityEngine;
-using System.Linq;
+using System.Collections.Generic;
 
 public class ListMaterialsInFolder : MonoBehaviour
 {
-    public static string[] ListMaterials()
+    public static List<PlayerColor> ListMaterials()
     {
         Material[] materials = Resources.LoadAll<Material>("TankMaterials/");
-        foreach (var material in materials)
+
+        List<PlayerColor> playerColors = new List<PlayerColor>();
+
+        foreach (var m in materials)
         {
-            Debug.Log($"Materials in folder '{material.name}':");
+            playerColors.Add(new PlayerColor(m));
         }
 
-        return materials.Select(obj => obj.name).ToArray(); ;
+        return playerColors;
     }
 }
