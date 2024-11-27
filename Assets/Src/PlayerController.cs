@@ -1,5 +1,6 @@
 using System;
 using CodeMonkey.HealthSystemCM;
+using TMPro;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using Unity.Services.Lobbies;
@@ -43,7 +44,6 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
             health.Value = hs.GetHealth();
         }
     }
-
 
     public override void OnNetworkSpawn()
     {
