@@ -155,6 +155,24 @@ public class LobbyManager : MonoBehaviour
         {
             RefreshLobbyData();
         }
+
+        if (State == LobbyState.ClientInGame) {
+            // Load all players and figure our how many of them are alive
+            var players = gameObject.GetComponents<PlayerController>();
+            var aliveCount = 0;
+            foreach (var player in players)
+            {
+                if (!player.GetHealthSystem().IsDead()) {
+                    aliveCount++;
+                }
+            }
+
+            if (aliveCount <= 1) {
+                // Game over
+                Debug.Log("Game over");
+                CloseGame();
+            }
+        }
     }
 
     private void OnDestroy()

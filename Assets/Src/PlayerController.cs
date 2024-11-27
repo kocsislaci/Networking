@@ -40,7 +40,6 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
 
     private void OnHealthChangeServer(object sender, EventArgs e)
     {
-
         if (IsServer)
         {
             health.Value = hs.GetHealth();
@@ -150,9 +149,8 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
             hs.Damage(damage);
             if (hs.IsDead())
             {
-                Debug.Log($"Thats it, Im dead :( killed by #{sourcePlayer}. I have died #{deaths} times.");
-                deaths++;
-                hs.SetHealth(maxHealth);
+                Debug.Log($"Thats it, Im dead :( killed by #{sourcePlayer}.");
+                networkObject.Despawn(true);
             }
         }
     }

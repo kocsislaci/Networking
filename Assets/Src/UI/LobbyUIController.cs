@@ -50,6 +50,7 @@ public class LobbyUIController : MonoBehaviour
     // in game view buttons
     private Button closeGameButton;
     private Button leaveGameButton;
+    private GameObject gameOverUI;
 
     // unity events
     private async void Awake()
@@ -122,6 +123,7 @@ public class LobbyUIController : MonoBehaviour
         // in game view buttons
         closeGameButton = inGameDocument.rootVisualElement.Q("close-game") as Button;
         leaveGameButton = inGameDocument.rootVisualElement.Q("leave-game") as Button;
+        gameOverUI = GameObject.Find("GameOver");
     }
 
     public string GetPlayerName()
