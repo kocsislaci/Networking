@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using CodeMonkey.HealthSystemCM;
 using TMPro;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using Unity.Services.Lobbies;
+using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
 public class PlayerController : NetworkBehaviour, IGetHealthSystem
@@ -67,20 +69,26 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
         Array.Resize(ref meshRenderers, meshRenderers.Length + 1);
         meshRenderers[meshRenderers.GetUpperBound(0)] = GetComponent<MeshRenderer>();
 
-        FetchAndSetColor();
-    }
-
-    private void FetchAndSetColor()
-    {
         var lobbyManager = FindAnyObjectByType<LobbyManager>();
-        var playerId = AuthenticationService.Instance.PlayerId;
 
-        var data = lobbyManager.GetPlayerData(playerId);
+        var data = FetchPlayerData(lobbyManager);
+
 
         var colorData = data["color"];
 
         var m = PlayerColor.FindColor(lobbyManager.defaultColors, colorData.Value);
         SetColor(m.material);
+
+
+        var playerName = data["name"];
+        SetName(playerName.Value);
+    }
+
+    private Dictionary<string, PlayerDataObject> FetchPlayerData(LobbyManager lobbyManager)
+    {
+        var playerId = AuthenticationService.Instance.PlayerId;
+
+        return lobbyManager.GetPlayerData(playerId);
     }
 
     private void Update()
@@ -179,4 +187,11 @@ public class PlayerController : NetworkBehaviour, IGetHealthSystem
         }
     }
 
+    void SetName(string name)
+    {
+        var textMesh = GetComponentInChildren<TextMeshPro>();
+
+        Debug.Log("finding name");
+        textMesh.text = name;
+    }
 }
