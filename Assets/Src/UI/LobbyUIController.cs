@@ -30,7 +30,7 @@ public class LobbyUIController : MonoBehaviour
     private TextField joinLobbyTextField;
     private string typedInLobbyCode = "";
     private TextField lobbyListTextField;
-
+    private TextField playerName;
     // lobby view buttons
     private Button startButton;
     private Button readyButton;
@@ -86,6 +86,7 @@ public class LobbyUIController : MonoBehaviour
         playerIdLabel = lobbyListDocument.rootVisualElement.Q("player-id") as Label;
         joinLobbyTextField = lobbyListDocument.rootVisualElement.Q("lobby-id-text-field") as TextField;
         lobbyListTextField = lobbyListDocument.rootVisualElement.Q("lobby-list") as TextField;
+        playerName = lobbyListDocument.rootVisualElement.Q("player-name") as TextField;
     }
     private void SetupLobbyViewReferences()
     {

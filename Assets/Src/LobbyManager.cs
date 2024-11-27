@@ -348,6 +348,24 @@ public class LobbyManager : MonoBehaviour
     }
 
     // Update API methods
+    public async void UpdatePlayerName(string name)
+    {
+        try {
+            UpdatePlayerOptions options = new UpdatePlayerOptions();
+
+            options.Data = new Dictionary<string, PlayerDataObject>()
+            {
+                {
+                    "name", new PlayerDataObject(
+                        visibility: PlayerDataObject.VisibilityOptions.Member,
+                        value: name)
+                },
+            };
+            await LobbyService.Instance.UpdatePlayerAsync(connectedLobby.Id, AuthenticationService.Instance.PlayerId, options);
+        } catch (LobbyServiceException e) {
+            Debug.LogError(e);
+        }
+    }
 
     public async void UpdatePlayerColor(string color)
     {
