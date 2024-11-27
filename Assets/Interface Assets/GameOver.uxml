@@ -1,3 +1,3 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:Label text="You are dead. Git gud." display-tooltip-when-elided="true" name="game-over" style="font-size: 66px; height: 378px; width: 320px; white-space: normal;" />
+    <ui:Label text="GAME OVER" display-tooltip-when-elided="true" style="font-size: 64px; white-space: normal; height: 402px;" />
 </ui:UXML>
